@@ -1,0 +1,3 @@
+textual
+prompt_toolkit
+pygments

@@ -1,0 +1,16 @@
+#file-tree {
+    width: 1fr;
+    height: 60%;
+    border: heavy $accent;
+}
+
+#git-panel {
+    width: 1fr;
+    height: 40%;
+    border: round green;
+}
+
+#editor {
+    width: 2fr;
+    border: heavy #555555;
+}
