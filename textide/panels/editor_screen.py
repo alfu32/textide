@@ -7,7 +7,7 @@ from prompt_toolkit.widgets import TextArea
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.lexers import PygmentsLexer
 from prompt_toolkit.document import Document
-from pygments.lexers import PythonLexer
+from pygments.lexers.python import PythonLexer
 from prompt_toolkit.styles import Style
 from threading import Thread
 from pathlib import Path
@@ -39,11 +39,11 @@ class EditorScreen(Screen):
         )
 
         editor = TextArea(
-            buffer=buffer,
             lexer=PygmentsLexer(PythonLexer),
             scrollbar=True,
             line_numbers=True,
         )
+        editor.buffer=buffer
 
         kb = KeyBindings()
 
@@ -52,8 +52,8 @@ class EditorScreen(Screen):
             # Save the buffer content
             try:
                 self.path.write_text(buffer.text, encoding="utf-8")
-            except Exception as e:
-                buffer.insert_text(f"\n# Save failed: {e}\n")
+            except Exception as exc:
+                buffer.insert_text(f"\n# Save failed: {exc}\n")
 
         @kb.add("c-q")
         def _(event):

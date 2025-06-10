@@ -3,14 +3,9 @@ from textual.widget import Widget
 from textual.reactive import reactive
 from prompt_toolkit.document import Document
 from prompt_toolkit.lexers import PygmentsLexer
-from prompt_toolkit.layout.controls import BufferControl
-from prompt_toolkit.layout import Window
 from prompt_toolkit.buffer import Buffer
-from prompt_toolkit.application import get_app_or_none
-from prompt_toolkit.data_structures import Point
 from pygments import lex
 from pygments.lexers.python import PythonLexer
-from pygments.formatters.terminal256 import Terminal256Formatter
 from pygments.token import Token
 from rich.text import Text
 
@@ -30,7 +25,7 @@ PYGMENTS_STYLE_MAP = {
 
 def get_rich_style(token_type):
     """Simplify token types to their base class (e.g., Token.Comment.Single -> Token.Comment)"""
-    while token_type not in PYGMENTS_STYLE_MAP and token_type.parent != token_type:
+    while token_type not in PYGMENTS_STYLE_MAP and token_type is not None and token_type.parent != token_type:
         token_type = token_type.parent
     return PYGMENTS_STYLE_MAP.get(token_type, "white")
 

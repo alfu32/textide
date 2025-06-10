@@ -14,5 +14,5 @@ class FileTreePanel(DirectoryTree):
 
     async def on_directory_tree_file_selected(self, event: DirectoryTree.FileSelected) -> None:
         p=event.path.resolve()
-        self.notify(f"File {p} picked successfully", severity="info")
-        self.post_message(FileTreePanel.FilePicked(p))
+        self.notify(f"File {p} picked successfully", severity="information")
+        self.post_message(FileTreePanel.FilePicked(p.__str__()))

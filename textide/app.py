@@ -5,8 +5,6 @@ from textual.containers import Horizontal, Vertical
 from textide.panels.file_tree import FileTreePanel
 from textide.panels.git_panel import GitPanel
 from textide.panels.editor import EditorPanel
-from textual.widgets import DirectoryTree
-from textide.panels.editor_screen import EditorScreen
 
 
 class TextIDEApp(App):
@@ -15,6 +13,7 @@ class TextIDEApp(App):
     def __init__(self):
         super().__init__()
         self.editor: EditorPanel | None = None
+        self.notify(f"W.E.L.C.O.M.E to TextIDE", severity="information")
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -27,7 +26,7 @@ class TextIDEApp(App):
         yield Footer()
 
     async def on_file_tree_panel_file_picked(self, msg: FileTreePanel.FilePicked) -> None:
-        self.notify(f"received picked file! {msg.path}", severity="info")
+        self.notify(f"received picked file! {msg.path}", severity="information")
         editor: EditorPanel = self.query_one(EditorPanel)
         editor.load_file(path=msg.path)
         self.set_focus(editor)  # ✅ move focus into the editor
