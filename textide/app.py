@@ -4,7 +4,7 @@ from textual.widgets import Header, Footer
 from textual.containers import Horizontal, Vertical
 from textide.panels.file_tree import FileTreePanel
 from textide.panels.git_panel import GitPanel
-from textide.panels.editor import EditorPanel
+from textide.panels.editors import EditorsPanel
 
 
 class TextIDEApp(App):
@@ -12,7 +12,7 @@ class TextIDEApp(App):
 
     def __init__(self):
         super().__init__()
-        self.editor: EditorPanel | None = None
+        self.editor: EditorsPanel | None = None
         self.notify(f"W.E.L.C.O.M.E to TextIDE", severity="information")
 
     def compose(self) -> ComposeResult:
@@ -21,7 +21,7 @@ class TextIDEApp(App):
             with Vertical():
                 yield FileTreePanel(id="file-tree")
                 yield GitPanel(id="git-panel")
-            self.editor = EditorPanel(id="editor")
+            self.editor = EditorsPanel(id="editor")
             yield self.editor
         yield Footer()
 
@@ -30,7 +30,7 @@ class TextIDEApp(App):
         # editor: EditorPanel = self.query_one(EditorPanel)
         # editor.load_file(path=msg.path)
         # self.set_focus(editor)  # ✅ move focus into the editor
-        editor = self.query_one("#editor", EditorPanel)
+        editor = self.query_one("#editor", EditorsPanel)
         with open(msg.path, "r", encoding="utf-8") as f:
             content = f.read()
         editor.load_content(content, path=msg.path)

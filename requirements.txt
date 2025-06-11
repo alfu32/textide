@@ -1,4 +1,4 @@
-rich
 textual
+textual[syntax]
 prompt_toolkit
 pygments
