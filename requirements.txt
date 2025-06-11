@@ -1,4 +1,7 @@
 textual
 textual[syntax]
+textual-dev
 prompt_toolkit
 pygments
+
+## ok baby

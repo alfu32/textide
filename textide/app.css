@@ -10,7 +10,45 @@
     border: round green;
 }
 
-#editor {
+#editors {
     width: 2fr;
     border: heavy #555555;
+}
+
+#editors > #tab-vertical > #tab-bar {
+    width: auto;
+    height: 1;
+    min-height: 1;
+    max-height: 1;
+    layout: horizontal;
+    overflow: hidden hidden;
+    border: none;
+}
+
+#editors > #tab-vertical > #editor {
+  height: auto;
+}
+
+/* make tab text snug */
+#tab-bar > .tab-name {
+  padding: 0 1 0 1;
+  height: 1;
+  min-height: 1;
+  max-height: 1;
+}
+/* make tab text snug */
+#tab-bar > .tab-selected {
+  color:$accent;
+}
+
+/* make the × super-tight */
+#tab-bar > .tab-close {
+  padding: 0;
+  width: 3;
+  min-width: 3;
+  max-width: 3;
+  height: 1;
+  min-height: 1;
+  max-height: 1;
+  text-align: center;
 }

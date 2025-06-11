@@ -31,10 +31,14 @@ You can embed a PromptToolkit Application inside a Textual panel via a custom wi
 ## 4. Syntax highlighting
 Use Pygments lexers hooked into prompt_toolkit’s Lexer interface.
 
+## most of it is ready
+
 ## 5. LSP integration
 python-lsp-jsonrpc + python-lsp-server
 
 Spin up an LSP server process (e.g. pylsp, clangd, etc.).
+
+## ok baby
 
 Send/receive JSON-RPC messages to power “go to definition,” diagnostics, auto-complete.
 

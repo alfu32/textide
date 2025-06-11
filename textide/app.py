@@ -10,6 +10,8 @@ from textide.panels.editors import EditorsPanel
 class TextIDEApp(App):
     CSS_PATH = "app.css"
 
+    BINDINGS = [("d", "toggle_dark", "Toggle dark mode")]
+
     def __init__(self):
         super().__init__()
         self.editor: EditorsPanel | None = None
@@ -21,17 +23,29 @@ class TextIDEApp(App):
             with Vertical():
                 yield FileTreePanel(id="file-tree")
                 yield GitPanel(id="git-panel")
-            self.editor = EditorsPanel(id="editor")
+            self.editor = EditorsPanel(id="editors")
             yield self.editor
         yield Footer()
 
+    def action_toggle_dark(self) -> None:
+        """An action to toggle dark mode."""
+        self.theme = (
+            "textual-dark" if self.theme == "textual-light" else "textual-light"
+        )
+
     async def on_file_tree_panel_file_picked(self, msg: FileTreePanel.FilePicked) -> None:
-        self.notify(f"received picked file! {msg.path}", severity="information")
+        self.log(f"received picked file! {msg.path}")
         # editor: EditorPanel = self.query_one(EditorPanel)
         # editor.load_file(path=msg.path)
         # self.set_focus(editor)  # ✅ move focus into the editor
-        editor = self.query_one("#editor", EditorsPanel)
+        editor = self.query_one("#editors", EditorsPanel)
         with open(msg.path, "r", encoding="utf-8") as f:
             content = f.read()
         editor.load_content(content, path=msg.path)
         self.set_focus(editor)
+
+
+
+if __name__ == "__main__":
+    app = TextIDEApp()
+    app.run()

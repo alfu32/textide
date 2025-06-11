@@ -1,5 +1,5 @@
 # textide/panels/editors_panel.py
-
+import asyncio
 from pathlib import Path
 from typing import Dict, List
 
@@ -7,13 +7,51 @@ from textual.app import ComposeResult
 from textual.message import Message
 from textual.reactive import reactive
 from textual.widget import Widget
-from textual.widgets import Button, Select, TextArea
+from textual.widgets import Button, Select, TextArea,Static, Footer
 from textual.containers import Horizontal, Vertical
+from textual.await_remove import AwaitRemove
 
-MAX_VISIBLE_TABS = 6  # how many tabs before we start overflowing
+from textide.panels.buttons import SmallButton
+from textide.panels.languages import detect_language
+
+MAX_VISIBLE_TABS = 4  # how many tabs before we start overflowing
 
 class EditorsPanel(Widget):
     """A tab-bar + single code editor, with file-meta in memory."""
+
+    BINDINGS = [("^s", "save_current_editor", "Save")]
+
+
+
+    def action_save_current_editor(self) -> None:
+        """Save the active editor’s contents back to its file."""
+        path = self.active
+        if not path:
+            return  # nothing to save
+
+        # grab the editor widget and its text
+        editor: TextArea = self.query_one("#editor", TextArea)
+        text = editor.text
+
+        try:
+            # write out to disk
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(text)
+
+            # update our in-memory metadata
+            meta = self._files[path]
+            meta["content"] = text
+            meta["is_saved"] = True
+
+            # refresh the tab labels (to remove the • bullet)
+            self._refresh_tabs()
+
+            # optional: notify user
+            self.notify(f"Saved {Path(path).name}", severity="information")
+
+        except Exception as exc:
+            # notify on error
+            self.notify(f"Error saving {Path(path).name}: {exc}", severity="error")
 
     class FileClosed(Message):
         """Posted when a file tab is closed."""
@@ -31,11 +69,15 @@ class EditorsPanel(Widget):
 
     def compose(self) -> ComposeResult:
         # Tab-bar row
-        with Vertical():
+        with Vertical(id="tab-vertical"):
             yield Horizontal(id="tab-bar")
             # single underlying editor
             yield TextArea.code_editor(
-                "", language="python", id="editor", show_line_numbers=True, # scrollbar=True
+                text="",
+                language="python",
+                id="editor",
+                show_line_numbers=True,
+                compact=True# scrollbar=True
             )
 
     def load_content(self, content: str, path: str) -> None:
@@ -54,51 +96,48 @@ class EditorsPanel(Widget):
         meta = self._files[path]
         editor = self.query_one("#editor", TextArea)
         editor.text = meta["content"]
-        editor.language = self._detect_language(path)
+        editor.language = detect_language(path,meta["content"])
         # TODO: restore cursor via editor.cursor_position = meta["cursor"]
         self.active = path
         self._refresh_tabs()
 
-    def _detect_language(self, path: str) -> str:
-        ext = Path(path).suffix.lower().lstrip(".")
-        return {
-            "py": "python",
-            "js": "javascript",
-            "ts": "typescript",
-            "html": "html",
-            "css": "css",
-        }.get(ext, "text")
-
     def _refresh_tabs(self) -> None:
         bar = self.query_one("#tab-bar", Horizontal)
         # bar.clear()
+        # schedule it:
+        def on_remove_done(task: asyncio.Task):
+            lll=len(self.open_files)
+            visible = self.open_files
+            if lll>MAX_VISIBLE_TABS:
+                overflow = self.open_files[:lll-MAX_VISIBLE_TABS]
+                visible = self.open_files[lll-MAX_VISIBLE_TABS:]
+                if overflow:
+                    # use Select with Option tuples for overflow
+                    options = [(Path(p).name, p) for p in overflow]
+                    sel = Select(options, prompt="⋯", id="overflow",compact=True)
+                    bar.mount(sel)
 
-        visible = self.open_files[:MAX_VISIBLE_TABS]
-        overflow = self.open_files[MAX_VISIBLE_TABS:]
-
-        for p in visible:
-            name = Path(p).name
-            meta = self._files[p]
-            label = f"{name}{'' if meta['is_saved'] else '•'}"
-            btn = Button(label, name=p, variant=("primary" if p == self.active else "default"))
-            bar.mount(btn)
-            close = Button("×", name=f"close:{p}", variant="error")
-            bar.mount(close)
-
-        if overflow:
-            # use Select with Option tuples for overflow
-            options = [(Path(p).name, p) for p in overflow]
-            sel = Select(options, prompt="⋯", id="overflow")
-            bar.mount(sel)
+            for p in visible:
+                name = Path(p).name
+                meta = self._files[p]
+                label = f"{name}{'' if meta['is_saved'] else '•'}"
+                btn = Button(label=label, name=f"select:{p}", classes="tab-name" if self.active!=p else "tab-name tab-selected",compact=True)
+                bar.mount(btn)
+                close = Button(label="×", name=f"close:{p}", classes="tab-close" if self.active!=p else "tab-close tab-selected",compact=True)
+                bar.mount(close)
+        task = asyncio.ensure_future(bar.remove_children("*"))
+        task.add_done_callback(on_remove_done)
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         name = event.button.name
         if name and name.startswith("close:"):
             path = name.split(":", 1)[1]
             self._close(path)
-        elif name and Path(name).suffix:
+        elif name and name.startswith("select:"):
+            path = name.split(":", 1)[1]
             # a tab button—name is the full path
-            self._activate(name)
+            if Path(path).suffix:
+                self._activate(path)
 
     def on_select_changed(self, event: Select.Changed) -> None:
         # overflow → activate the selected value
@@ -116,7 +155,7 @@ class EditorsPanel(Widget):
                 editor = self.query_one("#editor", TextArea)
                 editor.text = ""
                 self.active = None
-                self._refresh_tabs()
+        self._refresh_tabs()
 
     def on_key(self, event) -> None:
         # detect changes to mark unsaved
