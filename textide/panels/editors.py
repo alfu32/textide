@@ -108,14 +108,10 @@ class EditorsPanel(Widget):
         def on_remove_done(task: asyncio.Task):
             lll=len(self.open_files)
             visible = self.open_files
+            overflow = []
             if lll>MAX_VISIBLE_TABS:
-                overflow = self.open_files[:lll-MAX_VISIBLE_TABS]
+                overflow = self.open_files[0:lll-MAX_VISIBLE_TABS]
                 visible = self.open_files[lll-MAX_VISIBLE_TABS:]
-                if overflow:
-                    # use Select with Option tuples for overflow
-                    options = [(Path(p).name, p) for p in overflow]
-                    sel = Select(options, prompt="⋯", id="overflow",compact=True)
-                    bar.mount(sel)
 
             for p in visible:
                 name = Path(p).name
@@ -125,6 +121,11 @@ class EditorsPanel(Widget):
                 bar.mount(btn)
                 close = Button(label="×", name=f"close:{p}", classes="tab-close" if self.active!=p else "tab-close tab-selected",compact=True)
                 bar.mount(close)
+            if overflow:
+                # use Select with Option tuples for overflow
+                options = [(Path(p).name, p) for p in overflow]
+                sel = Select(options, prompt="⋯", id="overflow",compact=True)
+                bar.mount(sel)
         task = asyncio.ensure_future(bar.remove_children("*"))
         task.add_done_callback(on_remove_done)
 
