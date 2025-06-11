@@ -8,7 +8,7 @@ from textide.panels.editors import EditorsPanel
 
 
 class TextIDEApp(App):
-    CSS_PATH = "app.css"
+    CSS_PATH = "app.tcss"
 
     BINDINGS = [("d", "toggle_dark", "Toggle dark mode")]
 
