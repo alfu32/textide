@@ -52,3 +52,5 @@
   max-height: 1;
   text-align: center;
 }
+#git-commit-msg{
+}
