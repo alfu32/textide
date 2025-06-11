@@ -27,6 +27,11 @@ class TextIDEApp(App):
 
     async def on_file_tree_panel_file_picked(self, msg: FileTreePanel.FilePicked) -> None:
         self.notify(f"received picked file! {msg.path}", severity="information")
-        editor: EditorPanel = self.query_one(EditorPanel)
-        editor.load_file(path=msg.path)
-        self.set_focus(editor)  # ✅ move focus into the editor
+        # editor: EditorPanel = self.query_one(EditorPanel)
+        # editor.load_file(path=msg.path)
+        # self.set_focus(editor)  # ✅ move focus into the editor
+        editor = self.query_one("#editor", EditorPanel)
+        with open(msg.path, "r", encoding="utf-8") as f:
+            content = f.read()
+        editor.load_content(content, path=msg.path)
+        self.set_focus(editor)
