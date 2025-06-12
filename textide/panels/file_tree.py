@@ -2,7 +2,17 @@ from textual.widgets import DirectoryTree
 from textual.message import Message
 from pathlib import Path
 
-class FileTreePanel(DirectoryTree):
+class FileTreePanel(DirectoryTree, can_focus=True):
+    """A minimal git panel: status lines as selectable items + key bindings."""
+
+    BINDINGS = [
+        ("r", "refresh", "Refresh"),
+        ("n", "new_file",   "New File"),
+        ("f", "new_folder", "New Folder"),
+        ("x", "rename",  "Rename"),
+        ("d", "delete",    "Delete"),
+        ("o", "open_workspace", "Open Workspace"),
+    ]
 
     class FilePicked(Message):  # Unique, avoids name conflict
         def __init__(self, path: str) -> None:
