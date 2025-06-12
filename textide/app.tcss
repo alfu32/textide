@@ -1,13 +1,26 @@
 #file-tree {
     width: 1fr;
-    height: 60%;
     border: heavy $accent;
 }
 
 #git-panel {
     width: 1fr;
-    height: 40%;
-    border: round green;
+    border: heavy $accent;
+}
+#git-panel-container{
+}
+#git-panel-branch{
+    width: 1;
+    height: 1;
+}
+#git-panel-changes{
+    height: 1fr;
+}
+#git-panel-commit-message{
+    height: 1fr;
+}
+#git-panel-commits{
+    height: 1fr;
 }
 
 #editors {
@@ -53,4 +66,29 @@
   text-align: center;
 }
 #git-commit-msg{
+}
+
+#vertical-tab-parent{
+  layout: horizontal;
+}
+#vertical-tab-parent > #vertical-tab-buttons{
+  layout: vertical;
+  width: 5;
+  min-width: 5;
+  max-width: 5;
+}
+#vertical-tab-parent > #vertical-tab-buttons > .vertical-tab-button{
+  content-align: center middle;
+  width: 5;
+  min-width: 5;
+  max-width: 5;
+  height: 3;
+  min-height: 3;
+  max-height: 3;
+  margin:0;
+  padding:0;
+  color:gray;
+}
+#vertical-tab-parent > #vertical-tab-buttons > .vertical-tab-button.vertical-tab-button-active{
+  color:$accent
 }

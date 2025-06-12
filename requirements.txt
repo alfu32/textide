@@ -3,5 +3,5 @@ textual[syntax]
 textual-dev
 prompt_toolkit
 pygments
-
+GitPython
 ## ok baby

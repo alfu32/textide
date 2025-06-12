@@ -5,6 +5,7 @@ from textual.containers import Horizontal, Vertical
 from textide.panels.file_tree import FileTreePanel
 from textide.panels.git_panel import GitPanel
 from textide.panels.editors import EditorsPanel
+from textide.panels.vertical_tabs import VerticalTabs
 
 
 class TextIDEApp(App):
@@ -21,8 +22,11 @@ class TextIDEApp(App):
         yield Header()
         with Horizontal():
             with Vertical():
-                yield FileTreePanel(id="file-tree")
-                yield GitPanel(id="git-panel")
+                tabs = [
+                    ("☰", FileTreePanel(id="file-tree")),
+                    ("⎇", GitPanel(id="git-panel")),
+                ]
+                yield VerticalTabs(tabs)
             self.editor = EditorsPanel(id="editors")
             yield self.editor
         yield Footer()
