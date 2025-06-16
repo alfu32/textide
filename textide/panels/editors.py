@@ -64,7 +64,7 @@ class EditorsPanel(Widget):
     open_files: reactive[List[str]] = reactive([])
     active: reactive[str | None]    = reactive(None)
 
-    def __init__(self, **kwargs):
+    def __init__(self,**kwargs):
         super().__init__(**kwargs)
         # path → { content, is_saved, cursor_pos }
         self._files: Dict[str, Dict] = {}

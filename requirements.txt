@@ -1,6 +1,7 @@
 textual
 textual[syntax]
 textual-dev
+textual-fspicker
 prompt_toolkit
 pygments
 GitPython

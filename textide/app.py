@@ -1,4 +1,7 @@
 # textide/app.py
+import sys
+from pathlib import Path
+
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer
 from textual.containers import Horizontal, Vertical
@@ -13,9 +16,10 @@ class TextIDEApp(App):
 
     BINDINGS = [("d", "toggle_dark", "Toggle dark mode")]
 
-    def __init__(self):
+    def __init__(self,base:Path):
         super().__init__()
         self.editor: EditorsPanel | None = None
+        self.base=base
         self.notify(f"W.E.L.C.O.M.E to TextIDE", severity="information")
 
     def compose(self) -> ComposeResult:
@@ -23,7 +27,7 @@ class TextIDEApp(App):
         with Horizontal():
             with Vertical():
                 tabs = [
-                    ("☰", FileTreePanel(id="file-tree")),
+                    ("☰", FileTreePanel(path=self.base,id="file-tree")),
                     ("⎇", GitPanel(id="git-panel")),
                 ]
                 yield VerticalTabs(tabs)
@@ -51,5 +55,5 @@ class TextIDEApp(App):
 
 
 if __name__ == "__main__":
-    app = TextIDEApp()
+    app = TextIDEApp(base=Path(sys.argv[1] if len(sys.argv) >1 else "."))
     app.run()
