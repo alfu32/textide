@@ -23,9 +23,12 @@ class FileTreePanel(DirectoryTree, can_focus=True):
 
     def __init__(self, path: Path = Path.cwd(), **kwargs):
         super().__init__(path, **kwargs)
-        self.ICON_FILE='◙ '
-        self.ICON_NODE = '→ ' # '■ ■²ⁿ√·∙°≈÷⌡⌠≤≥±≡∩εφ∞δΩΦΘτµσΣπΓßα▀▐ ▌ ▄ █▀▄█┌┘╪╫╓╒╘╙╥╤╨╧╬═╠╦╩╩¶╚╟╞╞┼─├┬┴└┐╛╜╝╗║╣\╕╕╖╢╡┤↕↕◄►☼♫♪♀♂◙○◘•♠♣♦♥☻☺¶§▬↨↑↓→←∟↔▲▼ !"'
-        self.ICON_NODE_EXPANDED = '↕ '
+        self.ICON_FILE=' '
+        self.ICON_NODE='■ '
+        self.ICON_NODE_EXPANDED='■ '
+        # self.ICON_FILE='◙ '
+        # self.ICON_NODE = '→ ' # '■ ■²ⁿ√·∙°≈÷⌡⌠≤≥±≡∩εφ∞δΩΦΘτµσΣπΓßα▀▐ ▌ ▄ █▀▄█┌┘╪╫╓╒╘╙╥╤╨╧╬═╠╦╩╩¶╚╟╞╞┼─├┬┴└┐╛╜╝╗║╣\╕╕╖╢╡┤↕↕◄►☼♫♪♀♂◙○◘•♠♣♦♥☻☺¶§▬↨↑↓→←∟↔▲▼ !"'
+        # self.ICON_NODE_EXPANDED = '↕ '
 
     async def on_directory_tree_file_selected(self, event: DirectoryTree.FileSelected) -> None:
         p=event.path.resolve()
