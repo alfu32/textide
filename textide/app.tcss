@@ -25,6 +25,7 @@
 
 #editors {
     width: 2fr;
+    height: 2fr;
     border: heavy #555555;
 }
 
@@ -70,6 +71,7 @@
 
 #vertical-tab-parent{
   layout: horizontal;
+  height:2fr;
 }
 #vertical-tab-parent > #vertical-tab-buttons{
   layout: vertical;
@@ -91,4 +93,8 @@
 }
 #vertical-tab-parent > #vertical-tab-buttons > .vertical-tab-button.vertical-tab-button-active{
   color:$accent
+}
+
+#terminal_bash{
+  height:1fr;
 }

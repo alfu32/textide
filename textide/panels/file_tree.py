@@ -13,7 +13,6 @@ class FileTreePanel(DirectoryTree, can_focus=True):
         ("f", "new_folder", "New Folder"),
         ("x", "rename",  "Rename"),
         ("d", "delete",    "Delete"),
-        ("o", "open_workspace", "Open Workspace"),
     ]
 
     class FilePicked(Message):  # Unique, avoids name conflict
@@ -34,9 +33,3 @@ class FileTreePanel(DirectoryTree, can_focus=True):
         p=event.path.resolve()
         self.log(f"File {p} picked successfully", severity="information")
         self.post_message(FileTreePanel.FilePicked(p.__str__()))
-
-    @work
-    async def action_open_workspace(self):
-        if opened := await self.app.push_screen_wait(SelectDirectory(location=self.path)):
-            self.path = (str(opened))
-            await self.reload()

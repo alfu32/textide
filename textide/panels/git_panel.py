@@ -1,6 +1,7 @@
 # textide/panels/git_panel.py
 import asyncio
 import subprocess
+from pathlib import Path
 from typing import List, Set
 
 from textual.app import ComposeResult
@@ -35,11 +36,16 @@ class GitPanel(Widget, can_focus=True):
     class Pushed(Message):    pass
 
     branch:       reactive[str]     = reactive("")
+    path:Path = Path('.')
     repo = Repo('.')
     selected_commit:Commit = None
 
     # which lines are toggled on
     selected: reactive[Set[str]]     = reactive(set())
+
+    def __init__(self, path: Path = Path.cwd(), **kwargs):
+        super().__init__(**kwargs)
+        self.path=path
 
     def compose(self) -> ComposeResult:
         with Vertical(id="git-panel-container"):
@@ -54,6 +60,7 @@ class GitPanel(Widget, can_focus=True):
 
     def action_refresh(self) -> None:
         """Reload `git status` and current branch."""
+        self.repo = Repo(self.path)
         # branch
         # drop selections no longer present
         self._rebuild_lists()
