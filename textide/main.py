@@ -1,4 +1,4 @@
-# textide/__main__.py
+# textide/main.py
 from textide.app import TextIDEApp
 
 if __name__ == "__main__":

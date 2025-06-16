@@ -1,5 +1,6 @@
 # textide/panels/editors_panel.py
 import asyncio
+from operator import indexOf
 from pathlib import Path
 from typing import Dict, List
 
@@ -13,6 +14,7 @@ from textual.await_remove import AwaitRemove
 
 from textide.panels.buttons import SmallButton
 from textide.panels.languages import detect_language
+from textide.utils import divide_list
 
 MAX_VISIBLE_TABS = 4  # how many tabs before we start overflowing
 
@@ -106,13 +108,14 @@ class EditorsPanel(Widget):
         # bar.clear()
         # schedule it:
         def on_remove_done(task: asyncio.Task):
-            lll=len(self.open_files)
-            visible = self.open_files
-            overflow = []
-            if lll>MAX_VISIBLE_TABS:
-                overflow = self.open_files[0:lll-MAX_VISIBLE_TABS]
-                visible = self.open_files[lll-MAX_VISIBLE_TABS:]
+            at=indexOf(self.open_files,self.active) if self.active else 0
+            before,visible,after=divide_list(self.open_files,at,MAX_VISIBLE_TABS)
 
+            if before:
+                # use Select with Option tuples for before
+                options = [(Path(p).name, p) for p in before]
+                sel = Select(options, prompt="⋯", id="before",compact=True)
+                bar.mount(sel)
             for p in visible:
                 name = Path(p).name
                 meta = self._files[p]
@@ -121,10 +124,10 @@ class EditorsPanel(Widget):
                 bar.mount(btn)
                 close = Button(label="×", name=f"close:{p}", classes="tab-close" if self.active!=p else "tab-close tab-selected",compact=True)
                 bar.mount(close)
-            if overflow:
-                # use Select with Option tuples for overflow
-                options = [(Path(p).name, p) for p in overflow]
-                sel = Select(options, prompt="⋯", id="overflow",compact=True)
+            if after:
+                # use Select with Option tuples for after
+                options = [(Path(p).name, p) for p in after]
+                sel = Select(options, prompt="⋯", id="after",compact=True)
                 bar.mount(sel)
         task = asyncio.ensure_future(bar.remove_children("*"))
         task.add_done_callback(on_remove_done)
