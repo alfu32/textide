@@ -4,8 +4,8 @@ from textual.widgets import Button
 from textual.containers import Horizontal,Vertical,Container
 
 class VerticalTabs(Widget):
-    def __init__(self, tabs: list[tuple[str, Widget]]) -> None:
-        super().__init__()
+    def __init__(self, tabs: list[tuple[str, Widget]], **kwargs):
+        super().__init__( **kwargs)
         self._tabs = tabs
         self._active = 0
 

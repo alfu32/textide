@@ -71,7 +71,7 @@ class EditorsPanel(Widget):
 
     def compose(self) -> ComposeResult:
         # Tab-bar row
-        with Vertical(id="tab-vertical"):
+        with Vertical(id="tab-horizontal"):
             yield Horizontal(id="tab-bar")
             # single underlying editor
             yield TextArea.code_editor(

@@ -40,17 +40,17 @@ class TextIDEApp(App):
         if self.file_tree_panel is None:
             self.file_tree_panel =FileTreePanel(path=self.base,id="file-tree")
         if self.terminal_panel is None:
-            self.terminal_panel = Shell(id="terminal_bash")
+            self.terminal_panel = Shell(id="terminal-shell")
         tabs = [
             ("☰", self.file_tree_panel),
             ("⎇", self.git_panel ),
         ]
         yield Header()
         with Horizontal():
-            with Vertical():
-                yield VerticalTabs(tabs)
+            yield VerticalTabs(tabs,id="left-panel")
+            with Vertical(id="right-panel"):
+                yield self.editor
                 yield self.terminal_panel
-            yield self.editor
         yield Footer()
 
     def action_toggle_dark(self) -> None:

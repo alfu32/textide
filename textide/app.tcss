@@ -25,11 +25,11 @@
 
 #editors {
     width: 2fr;
-    height: 2fr;
+    height:2fr;
     border: heavy #555555;
 }
 
-#editors > #tab-vertical > #tab-bar {
+#editors > #tab-horizontal > #tab-bar {
     width: auto;
     height: 1;
     min-height: 1;
@@ -39,8 +39,9 @@
     border: none;
 }
 
-#editors > #tab-vertical > #editor {
-  height: auto;
+#editors > #tab-horizontal > #editor {
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
 }
 
 /* make tab text snug */
@@ -69,9 +70,13 @@
 #git-commit-msg{
 }
 
-#vertical-tab-parent{
+#left-panel{
   layout: horizontal;
-  height:2fr;
+  width: 1fr;
+}
+#right-panel{
+  layout: vertical;
+  width: 2fr;
 }
 #vertical-tab-parent > #vertical-tab-buttons{
   layout: vertical;
@@ -95,6 +100,6 @@
   color:$accent
 }
 
-#terminal_bash{
-  height:1fr;
+#terminal-shell{
+    height:1fr;
 }
