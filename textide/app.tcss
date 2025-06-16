@@ -38,6 +38,11 @@
     overflow: hidden hidden;
     border: none;
 }
+#editors > #tab-horizontal > #tab-bar > #before,#editors > #tab-horizontal > #tab-bar > #after {
+  width: 25;
+  min-width: 25;
+  max-width: 25;
+}
 
 #editors > #tab-horizontal > #editor {
     overflow-y: scroll;

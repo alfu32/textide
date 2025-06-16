@@ -1,8 +1,9 @@
 import array
 from unittest import TestCase
 
-from textide.panels.interval import Interval
 from textide.utils import divide_list
+from textide.utils.interval import Interval
+from pygments.lexers import get_all_lexers
 
 
 class TestInterval(TestCase):
@@ -45,4 +46,8 @@ class TestInterval(TestCase):
             chunk, pos = divmod(by, 4)
             before,visible,after = divide_list(indexes,by,7)
             print(by,chunk, pos,before,visible,after)
+    def test_pygments(self):
 
+        languages = sorted({alias for _, aliases, _, _ in get_all_lexers() for alias in aliases})
+        for lang in languages:
+            print(lang)

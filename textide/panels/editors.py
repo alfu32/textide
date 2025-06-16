@@ -14,6 +14,7 @@ from textual.await_remove import AwaitRemove
 
 from textide.panels.buttons import SmallButton
 from textide.panels.languages import detect_language
+from tree_sitter_language_pack import get_language, get_binding
 from textide.utils import divide_list
 
 MAX_VISIBLE_TABS = 4  # how many tabs before we start overflowing
@@ -77,9 +78,11 @@ class EditorsPanel(Widget):
             yield TextArea.code_editor(
                 text="",
                 language="python",
+                theme="monokai",
                 id="editor",
                 show_line_numbers=True,
-                compact=True# scrollbar=True
+                # compact=True,
+                soft_wrap=True, # scrollbar=True
             )
 
     def load_content(self, content: str, path: str) -> None:
@@ -98,7 +101,20 @@ class EditorsPanel(Widget):
         meta = self._files[path]
         editor = self.query_one("#editor", TextArea)
         editor.text = meta["content"]
-        editor.language = detect_language(path,meta["content"])
+        lang = detect_language(path,meta["content"])
+        # self.notify(f"Found language {lang} for {path}", severity="information")
+        try:
+            editor.language = lang
+        except Exception as x:
+            # self.notify(f"Error decoding {path}: {x}", severity="warning")
+            language = get_language(lang)
+            binding = get_binding(lang)
+            try:
+                editor.language = lang
+                editor.binding = binding
+            except Exception as x:
+                self.notify(f"Error decoding {path}: {x}", severity="error")
+                editor.language = "markdown"
         # TODO: restore cursor via editor.cursor_position = meta["cursor"]
         self.active = path
         self._refresh_tabs()
