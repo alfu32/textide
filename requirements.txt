@@ -1,7 +1,7 @@
 textual
 textual[syntax]
 tree-sitter-language-pack
-tree-sitter-c=
+tree-sitter-c
 tree-sitter-cpp
 tree-sitter-kotlin
 tree-sitter-bash
